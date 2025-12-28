@@ -10,11 +10,14 @@ function App() {
     tasks: [],
   });
 
-  function handleAddTask(text) {
+  function handleAddTask(taskData) {
     setProjectState((prevState) => {
       const taskId = Math.random();
       const newTask = {
-        text: text,
+        text: taskData.text,
+        dueDate: taskData.dueDate,
+        priority: taskData.priority,
+        status: taskData.status || "todo",
         projectId: prevState.selectProjectId,
         id: taskId,
       };
@@ -30,6 +33,17 @@ function App() {
       return {
         ...prevState,
         tasks: prevState.tasks.filter((task) => task.id !== id),
+      };
+    });
+  }
+
+  function handleUpdateTaskStatus(id, status) {
+    setProjectState((prevState) => {
+      return {
+        ...prevState,
+        tasks: prevState.tasks.map((task) =>
+          task.id === id ? { ...task, status } : task
+        ),
       };
     });
   }
@@ -102,6 +116,7 @@ function App() {
       onDelete={handelDeleteProject}
       onAddTask={handleAddTask}
       onDeleteTask={handleDeleteTask}
+      onUpdateTaskStatus={handleUpdateTaskStatus}
       tasks={selectedProjectTasks}
     />
   );
